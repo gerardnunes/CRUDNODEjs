@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feed de Posts</title>
+
+    <style>
+      
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e9ebee;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        
+        .main-container {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        
+        .toggle-button {
+            background-color: #007bff;
+            color: white;
+            padding: 4px 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.8em;
+            cursor: pointer;
+            text-align: center;
+            margin-bottom: 10px;
+            width: auto;
+            transition: background-color 0.3s ease;
+        }
+
+        .toggle-button:hover {
+            background-color: #0056b3;
+        }
+
+        .form-container {
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+            display: none; /* Oculto inicialmente */
+            margin-bottom: 20px;
+            max-width: 100%;
+        }
+
+       
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 6px;
+            margin: 6px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        /* Botão de envio */
+        button[type="submit"] {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            padding: 6px;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+       
+        .post-container {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 10px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+        }
+
+        
+        .post-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+      
+        .post-content {
+            font-size: 1em;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+       
+        .delete-button {
+            background-color: #ff4d4f;
+            color: white;
+            padding: 6px 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .delete-button:hover {
+            background-color: #ff3333;
+        }
+
+        
+        .edit-button {
+            background-color: #ffc107;
+            color: white;
+            padding: 6px 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .edit-button:hover {
+            background-color: #e0a800;
+        }
+    </style>
+
+    <script>
+        // novo post
+        function toggleNewPostForm() {
+            const formContainer = document.querySelector('.new-post-form');
+            formContainer.style.display = formContainer.style.display === 'none' ? 'block' : 'none';
+        }
+
+        
+        function toggleEditForm(postId) {
+            const formContainer = document.querySelector(`#edit-form-${postId}`);
+            formContainer.style.display = formContainer.style.display === 'none' ? 'block' : 'none';
+        }
+    </script>
+</head>
+<body>
+
+<div class="main-container">
+    
+    <button class="toggle-button" onclick="toggleNewPostForm()">Novo Post</button>
+
+    
+    <div class="form-container new-post-form">
+        <form action="/add" method="POST">
+            <p>Título</p>
+            <input type="text" name="titulo" placeholder="Digite o título do post" required>
+            
+            <p>Conteúdo</p>
+            <textarea name="conteudo" rows="4" placeholder="Escreva o conteúdo do post" required></textarea>
+            
+            <button type="submit">Cadastrar</button>
+        </form>
+    </div>
+
+    <!-- Exibição dos posts -->
+    <h1 style="text-align: center;">Lista de Posts</h1>
+    {{#each posts}}
+        <div class="post-container">
+            <h2 class="post-title">{{titulo}}</h2>
+            <p class="post-content">{{conteudo}}</p>
+            <button class="edit-button" onclick="toggleEditForm({{id}})">Editar</button>
+            <a href="/delete/{{id}}">
+                <button class="delete-button">Deletar</button>
+            </a>
+
+            <!-- Formulário de edição -->
+            <div id="edit-form-{{id}}" class="form-container" style="display: none;">
+                <form action="/edit/{{id}}" method="POST">
+                    <p>Título</p>
+                    <input type="text" name="titulo" value="{{titulo}}" required>
+                    
+                    <p>Conteúdo</p>
+                    <textarea name="conteudo" rows="4" required>{{conteudo}}</textarea>
+                    
+                    <button type="submit">Salvar Alterações</button>
+                </form>
+            </div>
+        </div>
+    {{/each}}
+</div>
+
+</body>
+</html>
+
